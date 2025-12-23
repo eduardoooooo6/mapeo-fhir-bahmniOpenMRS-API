@@ -31,6 +31,7 @@ Tecnologías Utilizadas:
 - Python 3.9 o superior
 - Git
 - VS code
+- docker Desktop
 
 Tambien nececita acceso a:
 
@@ -43,24 +44,123 @@ https://github.com/eduardoooooo6/mapeo-fhir-bahmniOpenMRS-API
 
 ## Instalación
 
-**1️) Crear entorno virtual**
+## Instalación de Docker Desktop
+
+Docker Desktop permite ejecutar contenedores Docker de manera sencilla en sistemas Windows, macOS y Linux, y es requerido para levantar Bahmni mediante contenedores.
+
+### Pasos de instalación
+
+**Docker Desktop**
+
+1. Descargar Docker Desktop desde el sitio oficial:
+   https://www.docker.com/products/docker-desktop/
+
+2. Ejecutar el instalador y seguir las instrucciones del asistente
+
+3. Reiniciar el sistema si el instalador lo solicita
+
+4. Verificar que Docker esté correctamente instalado ejecutando en una terminal:
+
+
+docker --version
+docker compose version
+
+---
+**Entorno virtual VENV**
+
+1. Crear entorno virtual
 En la terminal de VScode entrar a la carpeta del proyecto donde se desea tener la api de mapeo, luego ejecutar el comando:
 
 python -m venv venv
 
-**2️) Activar entorno virtual**
+2. Activar entorno virtual
 Para activar el entorno virtual ejecutar:
 
 venv\Scripts\activate
 
 
-**3️) Instalar dependencias**
+3. Instalar dependencias
 
 pip install -r requirements.txt
 
+---
+**Bahmni/OpenMRS**
+
+Instalación de Bahmni/OpenMRS mediante Docker
+
+Para levantar Bahmni/OpenMRS de forma local se utiliza el repositorio oficial basado en Docker.
+
+Repositorio oficial de Bahmni Docker:
+https://github.com/Bahmni/bahmni-docker
+
+1. Clonar el repositorio de Bahmni
+git clone https://github.com/Bahmni/bahmni-docker.git
+cd bahmni-docker
+
+2. Levantar los servicios de Bahmni
+
+Desde el directorio del repositorio clonado, ejecutar:
+
+docker compose up -d
+
+
+Este comando descargará las imágenes necesarias y levantará automáticamente los servicios de Bahmni y OpenMRS.
+
+3. Acceso a Bahmni
+
+Una vez finalizado el proceso, Bahmni estará disponible normalmente en:
+
+http://localhost
+
+
+El sistema quedará listo para ser utilizado por la API de interoperabilidad FHIR–Bahmni.
+
+---
+
+**Descargar la imagen oficial de HAPI FHIR**
+
+HAPI FHIR proporciona una imagen oficial lista para usar.
+1. Para descargarla, ejecutar:
+
+docker pull hapiproject/hapi:latest
+
+2. Ejecutar el servidor HAPI FHIR
+
+Para levantar el servidor HAPI FHIR en modo R4, ejecutar:
+
+docker run -d \
+  -p 8080:8080 \
+  --name hapi-fhir \
+  hapiproject/hapi:latest
+
+
+Este comando ejecuta HAPI FHIR y expone el servicio en el puerto 8080.
+
+3. Acceso a HAPI FHIR
+
+Una vez iniciado el contenedor, el servidor HAPI FHIR estará disponible en:
+
+http://localhost:8080/fhir
+
+
+La interfaz web de prueba (si está habilitada) se puede acceder desde:
+
+http://localhost:8080
+
+4. Verificación del servidor
+
+Para comprobar que el servidor está funcionando correctamente, se puede acceder desde el navegador a:
+
+http://localhost:8080/fhir/Patient
+
+
+Si el servidor responde, HAPI FHIR está correctamente instalado y listo para integrarse con la API de interoperabilidad.
+
 ## Ejecución de la API
 
-La API se ejecuta en el puerto 5000 dentro de un entorno virtual ejecutando el sigueinte comando en la consola:
+Primero se debe Activar el entorno virtual como ya se mostro anteriormente.
+
+Luego la a API se ejecuta en el puerto 5000 dentro de un entorno virtual ejecutando el sigueinte comando en la consola:
 
 uvicorn main:app --host 0.0.0.0 --port 5000 --reload
 
